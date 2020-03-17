@@ -109,7 +109,6 @@ func verificaDia(diaMax: Int)->Int{
     }
     print("Dia iválido")
     return verificaDia(diaMax: diaMax)
-    
 }
 func opcoesPlanner() -> String? {
     //print (ano[0])
@@ -175,8 +174,6 @@ func visualizarAtividadesDiarias() -> String?{
 }
 func visualizarAtividadesSemanais() -> String?{return nil}
 func visualizarAtividadesMensais() -> String?{return nil}
-
-
 func adicionarAtividade() -> String?{
         let mesEscolhido = escolheMes()
         let i = verificaDia(diaMax: verificarQntdDias(mesEscolhido: mesEscolhido))
@@ -187,7 +184,6 @@ func adicionarAtividade() -> String?{
         print("\nVocê adicionou a atividade '\(nomeAtividade)' com sucesso\n")
     return nil
 }
-
 func removerAtividade() -> String?{
     let mesEscolhido = escolheMes()
     let diaVerificado = verificaDia(diaMax: verificarQntdDias(mesEscolhido: mesEscolhido))
@@ -212,38 +208,38 @@ func removerAtividade() -> String?{
 }
 func alterarAtividade() -> String?{
     let mesEscolhido = escolheMes()
-    let i = verificaDia(diaMax: verificarQntdDias(mesEscolhido: mesEscolhido))
-    if ano[mesEscolhido][i-1].atividadesDoDia.count == 0 {
+    let diaVerificado = verificaDia(diaMax: verificarQntdDias(mesEscolhido: mesEscolhido))
+    if ano[mesEscolhido][diaVerificado-1].atividadesDoDia.count == 0 {
         print("\nVocê não tem atividades nesse dia")
         return nil
         }
-    print("\nO que você pretende alterar?")
-    let nomeAtividade = readLine() ?? "Vazio"
-    var j = 0
-    var verificacaoAtividade=0
-    for atividade in ano[mesEscolhido][i-1].atividadesDoDia{
-        if atividade.nomeAtividade == nomeAtividade{
-            verificacaoAtividade=1
-            print("\nQual o novo nome da atividade?")
-            let novoNomeAtividade = readLine() ?? "Vazio"
-            ano[mesEscolhido][i-1].atividadesDoDia[j].nomeAtividade = novoNomeAtividade
-            let novoHorarioAtividade = verificaHorario()
-            ano[mesEscolhido][i-1].atividadesDoDia[j].horarioAtividade = novoHorarioAtividade
-            print("\nVocê alterou a atividade '\(nomeAtividade)' com sucesso")
-        }
-        j+=1
+    print("\nAtividades do Dia:")
+    var id=0
+    for atividade in ano[mesEscolhido][diaVerificado-1].atividadesDoDia{
+        print ("ID: \(id)   Atividade:\(atividade.nomeAtividade)   Horário:\(atividade.horarioAtividade)")
+        id+=1
     }
-    if verificacaoAtividade==0{
-            print("\nNão existem atividades com o nome: \(nomeAtividade)")
+    print("\nQual o ID da atividade a ser alterada?")
+    let idAtividade = Int(readLine() ?? "Vazio") ?? -1
+    if(idAtividade>=0 && idAtividade<ano[mesEscolhido][diaVerificado-1].atividadesDoDia.count){
+        print("\nVocê deseja alterar o nome da atividade? 1 - Sim")
+        let decisaoNome = Int(readLine() ?? "Vazio") ?? -1
+        if(decisaoNome == 1){
+          print("Qual o novo nome da atividade?")
+          let novoNomeAtividade = readLine() ?? "Vazio"
+          print("Você alterou o nome da atividade de: \(ano[mesEscolhido][diaVerificado-1].atividadesDoDia[idAtividade].nomeAtividade) para \(novoNomeAtividade)")
+          ano[mesEscolhido][diaVerificado-1].atividadesDoDia[idAtividade].nomeAtividade = novoNomeAtividade
         }
+        print("\nVocê deseja alterar o horário da atividade? 1 - Sim")
+        let decisaoHorario = Int(readLine() ?? "Vazio") ?? -1
+        if(decisaoHorario == 1){
+          let novoHorarioAtividade = verificaHorario()
+          print("Você alterou o horario da atividade de: \(ano[mesEscolhido][diaVerificado-1].atividadesDoDia[idAtividade].horarioAtividade) para \(novoHorarioAtividade)")
+          ano[mesEscolhido][diaVerificado-1].atividadesDoDia[idAtividade].horarioAtividade = novoHorarioAtividade
+        }
+    }
     return nil
     }
-
-
-
-
-
-
 while(true) {
     print("Deseja criar um planner? 1-Sim 2-Não")
     let criarPlanner: String?
