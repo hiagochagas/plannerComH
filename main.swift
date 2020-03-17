@@ -174,30 +174,19 @@ func visualizarAtividades() -> String?{
 }
 func visualizarAtividadesDiarias() -> String?{
     let mesEscolhido = escolheMes()
-    //print("\nQual dia deseja visualizar?")
-    //let diaEscolhido = readLine() ?? "Vazio"
     let diaEscolhido = verificaDia(diaMax:verificarQntdDias(mesEscolhido: mesEscolhido))
     ano[mesEscolhido][diaEscolhido].atividadesDoDia = sortHorario(dia: &ano[mesEscolhido][diaEscolhido])
-    var verificacaoDia = 0
-    for i in 1...verificarQntdDias(mesEscolhido: mesEscolhido){
-        if i == Int(diaEscolhido){
-            verificacaoDia=1
-            if ano[mesEscolhido][i-1].atividadesDoDia.count == 0{
-                print("\nNão há atividades no dia \(i)")
-            }
-            else{
-                let mesTrans = transformaMes(mesEscolhido: mesEscolhido)//Transforma 0 em Janeiro, 1 em Fevereiro...
-                print("\nMês \(mesTrans), dia \(diaEscolhido)")//alterar o 0 por variável
-                for atividade in ano[mesEscolhido][i-1].atividadesDoDia{
-                    print("Atividade:\(atividade.nomeAtividade)      Horário:\(atividade.horarioAtividade)")
-                }
-            }
+    if ano[mesEscolhido][diaEscolhido-1].atividadesDoDia.count == 0{
+        print("\nNão há atividades no dia \(diaEscolhido)")
+    }
+    else{
+        let mesTrans = transformaMes(mesEscolhido: mesEscolhido)//Transforma 0 em Janeiro, 1 em Fevereiro...
+        print("\nMês \(mesTrans), dia \(diaEscolhido)")//alterar o 0 por variável
+        for atividade in ano[mesEscolhido][diaEscolhido-1].atividadesDoDia{
+            print("Atividade:\(atividade.nomeAtividade)      Horário:\(atividade.horarioAtividade)")
         }
     }
-    if(verificacaoDia==0){
-        print("\nEsse dia '\(diaEscolhido)' não existe!")
-    }
-    return nil
+   return nil
 }
 func visualizarAtividadesSemanais() -> String?{return nil}
 func visualizarAtividadesMensais() -> String?{return nil}
