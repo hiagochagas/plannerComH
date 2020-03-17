@@ -6,7 +6,7 @@
 //
 import Foundation
 
-struct AtividadeDia{
+struct AtividadeDia: Equatable{
     var nomeAtividade: String
     var horarioAtividade: String
     // var categoria: String
@@ -34,7 +34,7 @@ for i in 0...11{ //inserção dos meses no ano
     mes = []
     let x = verificarQntdDias(mesEscolhido: i)
     for j in 1...x {
-        mes.append(Dias(data: String(j), atividadesDoDia: []))
+        mes.append(Dias(data: String(j-1), atividadesDoDia: []))
     }
     ano.insert(mes,at: i)
     //print("\n mês \(i)\n\(ano[i])")
@@ -101,26 +101,28 @@ func verificaHorario() -> String{
 }
 func sortHorario(dia: inout Dias) -> [AtividadeDia]{
   var diaSorted: [AtividadeDia] = []
-  var menorAtividade = dia.atividadesDoDia[0]
-  for _ in 0...dia.atividadesDoDia.count{  
-    var j = 0 // vai ser o id da menorAtividade, auxiliando na remoção da lista de dias
-    for atividade in dia.atividadesDoDia{
-      let horario = atividade.horarioAtividade.split(separator: ":")
-      let horas=Int(horario[0]) ?? -1
-      let minutos=Int(horario[1]) ?? -1
-      let horarioMenorAtividade = menorAtividade.horarioAtividade.split(separator: ":")
-      let horasMenorAtividade=Int(horarioMenorAtividade[0]) ?? -1
-      let minutosMenorAtividade=Int(horarioMenorAtividade[1]) ?? -1
-      if horas<horasMenorAtividade{
-        menorAtividade = atividade
+  if dia.atividadesDoDia.count != 0{ 
+    for _ in 1...dia.atividadesDoDia.count{  
+      var menorAtividade = dia.atividadesDoDia[0]
+      for atividade in dia.atividadesDoDia{
+        let horario = atividade.horarioAtividade.split(separator: ":")
+        let horas=Int(horario[0]) ?? -1
+        let minutos=Int(horario[1]) ?? -1
+        let horarioMenorAtividade = menorAtividade.horarioAtividade.split(separator: ":")
+        let horasMenorAtividade=Int(horarioMenorAtividade[0]) ?? -1
+        let minutosMenorAtividade=Int(horarioMenorAtividade[1]) ?? -1
+        if horas<horasMenorAtividade{
+          menorAtividade = atividade
+        }
+        else if horas == horasMenorAtividade && minutos<minutosMenorAtividade{
+          menorAtividade = atividade
+        }
       }
-      else if horas == horasMenorAtividade && minutos<minutosMenorAtividade{
-        menorAtividade = atividade
-      }
-      j+=1
+      diaSorted.append(menorAtividade)
+      if let index = dia.atividadesDoDia.firstIndex(of: menorAtividade) {
+        dia.atividadesDoDia.remove(at: index)
     }
-    diaSorted.append(menorAtividade)
-    dia.atividadesDoDia.remove(at: j)
+    }
   }
   return diaSorted
 }
@@ -175,7 +177,7 @@ func visualizarAtividades() -> String?{
 func visualizarAtividadesDiarias() -> String?{
     let mesEscolhido = escolheMes()
     let diaEscolhido = verificaDia(diaMax:verificarQntdDias(mesEscolhido: mesEscolhido))
-    ano[mesEscolhido][diaEscolhido].atividadesDoDia = sortHorario(dia: &ano[mesEscolhido][diaEscolhido])
+    ano[mesEscolhido][diaEscolhido-1].atividadesDoDia = sortHorario(dia: &ano[mesEscolhido][diaEscolhido-1])
     if ano[mesEscolhido][diaEscolhido-1].atividadesDoDia.count == 0{
         print("\nNão há atividades no dia \(diaEscolhido)")
     }
