@@ -99,6 +99,31 @@ func verificaHorario() -> String{
     print("\nHorário inválido!")
     return verificaHorario()
 }
+func sortHorario(dia: inout Dias) -> [AtividadeDia]{
+  var diaSorted: [AtividadeDia] = []
+  var menorAtividade = dia.atividadesDoDia[0]
+  for _ in 0...dia.atividadesDoDia.count{  
+    var j = 0 // vai ser o id da menorAtividade, auxiliando na remoção da lista de dias
+    for atividade in dia.atividadesDoDia{
+      let horario = atividade.horarioAtividade.split(separator: ":")
+      let horas=Int(horario[0]) ?? -1
+      let minutos=Int(horario[1]) ?? -1
+      let horarioMenorAtividade = menorAtividade.horarioAtividade.split(separator: ":")
+      let horasMenorAtividade=Int(horarioMenorAtividade[0]) ?? -1
+      let minutosMenorAtividade=Int(horarioMenorAtividade[1]) ?? -1
+      if horas<horasMenorAtividade{
+        menorAtividade = atividade
+      }
+      else if horas == horasMenorAtividade && minutos<minutosMenorAtividade{
+        menorAtividade = atividade
+      }
+      j+=1
+    }
+    diaSorted.append(menorAtividade)
+    dia.atividadesDoDia.remove(at: j)
+  }
+  return diaSorted
+}
 func verificaDia(diaMax: Int)->Int{
     print("\nEm qual dia a atividade se realizará?")
     let diaAtividade = readLine() ?? "Vazio"
@@ -149,8 +174,10 @@ func visualizarAtividades() -> String?{
 }
 func visualizarAtividadesDiarias() -> String?{
     let mesEscolhido = escolheMes()
-    print("\nQual dia deseja visualizar?")
-    let diaEscolhido = readLine() ?? "Vazio"
+    //print("\nQual dia deseja visualizar?")
+    //let diaEscolhido = readLine() ?? "Vazio"
+    let diaEscolhido = verificaDia(diaMax:verificarQntdDias(mesEscolhido: mesEscolhido))
+    ano[mesEscolhido][diaEscolhido].atividadesDoDia = sortHorario(dia: &ano[mesEscolhido][diaEscolhido])
     var verificacaoDia = 0
     for i in 1...verificarQntdDias(mesEscolhido: mesEscolhido){
         if i == Int(diaEscolhido){
@@ -159,7 +186,7 @@ func visualizarAtividadesDiarias() -> String?{
                 print("\nNão há atividades no dia \(i)")
             }
             else{
-                let mesTrans = transformaMes(mesEscolhido: mesEscolhido)
+                let mesTrans = transformaMes(mesEscolhido: mesEscolhido)//Transforma 0 em Janeiro, 1 em Fevereiro...
                 print("\nMês \(mesTrans), dia \(diaEscolhido)")//alterar o 0 por variável
                 for atividade in ano[mesEscolhido][i-1].atividadesDoDia{
                     print("Atividade:\(atividade.nomeAtividade)      Horário:\(atividade.horarioAtividade)")
