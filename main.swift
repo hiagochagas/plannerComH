@@ -38,11 +38,9 @@ for i in 0...11{ //inserção dos meses no ano
         dia+=1
         if(dia>6){
           dia = 0
-        }
-        
+        } 
     }
     ano.insert(mes,at: i)
-    //print("\n mês \(i)\n\(ano[i])")
 }
 func escolheMes() -> Int{
     print("\nEm qual mês você deseja operar? 1 - Janeiro ... 12 - Dezembro")
@@ -86,7 +84,6 @@ func transformaMes(mesEscolhido: Int) -> String{
         return "Dezembro"
     default:
         return "Tá errado kk" //mudar esse return
-    
     }
 }
 func verificaHorario() -> String{
@@ -105,8 +102,8 @@ func verificaHorario() -> String{
 }
 func sortHorario(dia: inout Dias) -> [AtividadeDia]{
   var diaSorted: [AtividadeDia] = []
-  if dia.atividadesDoDia.count != 0{ 
-    for _ in 1...dia.atividadesDoDia.count{  
+  if dia.atividadesDoDia.count != 0{
+    for _ in 1...dia.atividadesDoDia.count{
       var menorAtividade = dia.atividadesDoDia[0]
       for atividade in dia.atividadesDoDia{
         let horario = atividade.horarioAtividade.split(separator: ":")
@@ -162,7 +159,6 @@ func opcoesPlanner() -> String? {
     }
     return nil //não preciso dele :)
     }
-
 func visualizarAtividades() -> String?{
     print("\nQual modo de visualização você deseja?\n1-Diária\n2-Semanal\n3-Mensal")
     let opcaoV = readLine() ?? "Vazio"
@@ -183,7 +179,7 @@ func visualizarAtividadesDiarias() -> String?{
     let diaEscolhido = verificaDia(diaMax:verificarQntdDias(mesEscolhido: mesEscolhido))
     ano[mesEscolhido][diaEscolhido-1].atividadesDoDia = sortHorario(dia: &ano[mesEscolhido][diaEscolhido-1])
     if ano[mesEscolhido][diaEscolhido-1].atividadesDoDia.count == 0{
-        print("\nNão há atividades no dia \(diaEscolhido)")
+        print("\nNão há atividades no dia \(diaEscolhido) do mês \(transformaMes(mesEscolhido: mesEscolhido))")
     }
     else{
         let mesTrans = transformaMes(mesEscolhido: mesEscolhido)//Transforma 0 em Janeiro, 1 em Fevereiro...
@@ -197,7 +193,7 @@ func visualizarAtividadesDiarias() -> String?{
 func visualizarAtividadesSemanais() -> String?{
   var mesEscolhido = escolheMes()
   var diaEscolhido = verificaDia(diaMax:verificarQntdDias(mesEscolhido: mesEscolhido))
-  for _ in 0...6{  
+  for _ in 0...6{
     if ano[mesEscolhido][diaEscolhido-1].nomeDiaSemana == "Domingo"{
       var i = 0
       for _ in 0...6{
@@ -205,14 +201,16 @@ func visualizarAtividadesSemanais() -> String?{
             mesEscolhido+=1
             diaEscolhido=1
             i=0
-            }
-          print("\nMês: \(mesEscolhido+1) Dia: \(diaEscolhido+i) , \(ano[mesEscolhido][diaEscolhido-1+i].nomeDiaSemana)")
+        }
+        if(mesEscolhido == 12){
+            return nil
+        }
+        ano[mesEscolhido][diaEscolhido-1].atividadesDoDia = sortHorario(dia: &ano[mesEscolhido][diaEscolhido-1])
+        print("\nMês: \(transformaMes(mesEscolhido: mesEscolhido))    Dia: \(diaEscolhido+i) , \(ano[mesEscolhido][diaEscolhido-1+i].nomeDiaSemana)")
           for atividade in ano[mesEscolhido][diaEscolhido-1+i].atividadesDoDia{
-            print("Atividade:\(atividade.nomeAtividade)      Horário:\(atividade.horarioAtividade) ")  
+            print("Atividade:\(atividade.nomeAtividade)      Horário:\(atividade.horarioAtividade) ")
             }
-          i+=1
-          
-          
+          i+=1       
         }
       break
     }
@@ -237,6 +235,7 @@ func visualizarAtividadesMensais() -> String?{
         print("\nNão há atividades no dia \(diaEscolhido), \(ano[mesEscolhido][diaEscolhido-1].nomeDiaSemana)")
     }
     else{
+        ano[mesEscolhido][diaEscolhido-1].atividadesDoDia = sortHorario(dia: &ano[mesEscolhido][diaEscolhido-1])
         print("\nDia \(diaEscolhido), \(ano[mesEscolhido][diaEscolhido-1].nomeDiaSemana)")//alterar o 0 por variável
         for atividade in ano[mesEscolhido][diaEscolhido-1].atividadesDoDia{
             print("Atividade:\(atividade.nomeAtividade)      Horário:\(atividade.horarioAtividade)")
@@ -246,12 +245,12 @@ func visualizarAtividadesMensais() -> String?{
   return nil
   }
 func adicionarAtividade() -> String?{
-        let mesEscolhido = escolheMes()
-        let i = verificaDia(diaMax: verificarQntdDias(mesEscolhido: mesEscolhido))
+        let mesEscolhido = escolheMes()//lê o número do mês e verifica se o mes é valido 0-11
+        let i = verificaDia(diaMax: verificarQntdDias(mesEscolhido: mesEscolhido))//lê o valor do dia e verifica se é válido, por exemplo dia 30 de fevereiro(inválido)
         print("\nO que você pretende fazer?")
         let nomeAtividade = readLine() ?? "Vazio"
-        let horarioAtividade = verificaHorario()
-        ano[mesEscolhido][i-1].atividadesDoDia.append(AtividadeDia(nomeAtividade: nomeAtividade, horarioAtividade: horarioAtividade))
+        let horarioAtividade = verificaHorario()//lê o horário e verifica se é válido e está dentro do formato escolhido(HH:MM)
+        ano[mesEscolhido][i-1].atividadesDoDia.append(AtividadeDia(nomeAtividade: nomeAtividade, horarioAtividade: horarioAtividade))// a variável ano é um array de meses, meses é um array de dias e dias é uma struct que possui um número e um array de atividades e AtividadeDia é uma struct que possui um nome e um horário.
         print("\nVocê adicionou a atividade '\(nomeAtividade)' com sucesso\n")
     return nil
 }
